@@ -1,6 +1,8 @@
 import reducer from './reducer';
 import { genericCreator } from '../redux/action-creators';
-import { FETCH_COUNTRIES_FAILURE, FETCH_COUNTRIES_SUCCESS, SAVE_POPULATION } from '../redux/actions';
+import {
+  DELETE_COUNTRY, FETCH_COUNTRIES_FAILURE, FETCH_COUNTRIES_SUCCESS, SAVE_POPULATION,
+} from '../redux/actions';
 
 describe('Reducer', () => {
   it('should return state as is when we pass garbage', () => {
@@ -33,19 +35,43 @@ describe('Reducer', () => {
 
   it('should save population into matching country', () => {
     const result = reducer({ countries: [{ code: 'fr', Name: 'France' }, { code: 'it', name: 'Italy' }] },
-                           genericCreator(SAVE_POPULATION, { country_code: 'fr', population: 1000 }));
+      genericCreator(SAVE_POPULATION, { country_code: 'fr', population: 1000 }));
 
     expect(result).toBeDefined();
     expect(result)
-    .toEqual({ countries: [{ code: 'fr', Name: 'France', population: 1000 }, { code: 'it', name: 'Italy' }] });
+      .toEqual({ countries: [{ code: 'fr', Name: 'France', population: 1000 }, { code: 'it', name: 'Italy' }] });
   });
 
   it('shouldnt save population into non matching country', () => {
     const result = reducer({ countries: [{ code: 'fr', Name: 'France' }, { code: 'it', name: 'Italy' }] },
-                           genericCreator(SAVE_POPULATION, { country_code: 'uk', population: 10000 }));
+      genericCreator(SAVE_POPULATION, { country_code: 'uk', population: 10000 }));
 
     expect(result).toBeDefined();
     expect(result)
-    .toEqual({ countries: [{ code: 'fr', Name: 'France' }, { code: 'it', name: 'Italy' }] });
+      .toEqual({ countries: [{ code: 'fr', Name: 'France' }, { code: 'it', name: 'Italy' }] });
+  });
+
+  it('shouldnt delete country in empty array', () => {
+    const result = reducer({ countries: [] },
+      genericCreator(DELETE_COUNTRY, { country_code: 'uk' }));
+
+    expect(result).toBeDefined();
+    expect(result).toEqual({ countries: [] });
+  });
+
+  it('should delete country in array', () => {
+    const result = reducer({ countries: [{ code: 'fr', Name: 'France' }, { code: 'it', name: 'Italy' }] },
+      genericCreator(DELETE_COUNTRY, 'fr'));
+
+    expect(result).toBeDefined();
+    expect(result).toEqual({ countries: [{ code: 'it', name: 'Italy' }] });
+  });
+
+  it('shouldnt delete country not in array', () => {
+    const result = reducer({ countries: [{ code: 'fr', Name: 'France' }, { code: 'it', name: 'Italy' }] },
+      genericCreator(DELETE_COUNTRY, 'es'));
+
+    expect(result).toBeDefined();
+    expect(result).toEqual({ countries: [{ code: 'fr', Name: 'France' }, { code: 'it', name: 'Italy' }] });
   });
 });

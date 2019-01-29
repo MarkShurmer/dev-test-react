@@ -27,3 +27,18 @@ Feel free to use the internet including Google and Stackoverflow to help with th
 Please just ask.
 
 Good luck and thanks for taking the time to complete this task!
+
+----------------------------------------------------------------------
+
+
+## Build
+`yarn`
+
+## Running
+`yarn start`
+
+## Or
+`yarn go`
+
+## Run tests
+`yarn test`

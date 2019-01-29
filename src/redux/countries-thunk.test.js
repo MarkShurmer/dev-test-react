@@ -4,7 +4,6 @@ import loadCountries from './countries-thunk';
 import * as countryApi from '../api/country';
 
 describe('Countries thunk', () => {
-
   beforeAll(() => {
 
   });
@@ -18,7 +17,7 @@ describe('Countries thunk', () => {
     expect(mockDispatch).toHaveBeenCalledWith(genericCreator(FETCH_COUNTRIES));
   });
 
-  it('should have correct response on success', async() => {
+  it('should have correct response on success', async () => {
     countryApi.default = jest.fn(() => Promise.resolve([{ name: 'United Kingdom', code: 'UK' }]));
     const mockDispatch = jest.fn();
     const countriesThunk = loadCountries();
@@ -26,10 +25,10 @@ describe('Countries thunk', () => {
     await countriesThunk(mockDispatch);
     expect(mockDispatch.mock.calls.length).toBe(2);
     expect(mockDispatch.mock.calls[1][0])
-    .toEqual(genericCreator(FETCH_COUNTRIES_SUCCESS, [{ name: 'United Kingdom', code: 'UK' }]));
+      .toEqual(genericCreator(FETCH_COUNTRIES_SUCCESS, [{ name: 'United Kingdom', code: 'UK' }]));
   });
 
-  it('should send failure message when failure', async() => {
+  it('should send failure message when failure', async () => {
     countryApi.default = jest.fn(() => Promise.reject());
     jest.mock('../api/country', () => () => Promise.reject());
     const mockDispatch = jest.fn();

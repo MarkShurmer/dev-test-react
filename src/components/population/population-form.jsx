@@ -1,53 +1,96 @@
 import React from 'react';
-import { Row } from '../layout';
-import Button from '../app/Button';
 import PropTypes from 'prop-types';
+import Button from '../app/Button';
+import {
+  StyledLabel, Container, ChildLhs, ChildRhs, StyledSelect, StyledError,
+} from './styles';
 
 export class PopulationForm extends React.Component {
-
   constructor(props) {
     super(props);
 
     this.state = {
-      population: 0
+      population: props.population || 0,
+      country_code: props.countries ? props.countries[0].code : '',
     };
 
-    this.save.bind(this);
-  }
-
-  componentDidMount() {
-    //this.props.loadData();
+    this.save = this.save.bind(this);
+    this.changePopulation = this.changePopulation.bind(this);
+    this.changeCountry = this.changeCountry.bind(this);
+    this.delete = this.delete.bind(this);
   }
 
   save() {
-    this.props.onSave(this.state.population);
+    if (!this.props.error) {
+      this.props.onSave(this.state);
+    }
+  }
+
+  delete() {
+    if (!this.props.error) {
+      this.props.onDelete(this.state.country_code);
+    }
   }
 
   changePopulation(e) {
-    this.setState({population: e.value});
+    this.setState({ population: +e.target.value });
+  }
+
+  changeCountry(e) {
+    const selectedCountry = this.props.countries.find(c => c.code === e.target.value);
+    if (selectedCountry) {
+      this.setState({ country_code: selectedCountry.code, population: selectedCountry.population || 0 });
+    }
+  }
+
+  getCountryText(country) {
+    if (country.hasOwnProperty('population') && country.population > 0) {
+      return `${country.name} - ${country.population}`;
+    }
+
+    return country.name;
   }
 
   render() {
-    const { countries, onSave } = this.props;
+    const { countries, error } = this.props;
 
     return (
       <form>
-        <Row>
-          <label>Select country</label>
-          <select>
-            {countries && countries.map(country =>
-                             (
-                               <option key={country.code}>{country.name}</option>
-                             ))}
-          </select>
-        </Row>
-        <Row>
-          <label>Enter population</label>
-          <input placeholder="0" onChange={this.changePopulation}/>
-        </Row>
-        <Row>
-          <Button label="Save" onClick={onSave}/>
-        </Row>
+        <Container>
+          <ChildLhs>
+            <StyledLabel>Select country</StyledLabel>
+          </ChildLhs>
+          <ChildRhs>
+            <StyledSelect onChange={this.changeCountry}>
+              {countries && countries.map(country => (
+                <option
+                  key={country.code}
+                  value={country.code}
+                >
+                  {this.getCountryText(country)}
+                </option>
+              ))}
+            </StyledSelect>
+          </ChildRhs>
+          <ChildLhs>
+            <StyledLabel>Enter population</StyledLabel>
+          </ChildLhs>
+          <ChildRhs>
+            <input placeholder="0" onChange={this.changePopulation} value={this.state.population} />
+          </ChildRhs>
+          <ChildLhs>
+            <Button label="Save" onClick={this.save} />
+            <Button label="Delete" onClick={this.delete} color="quaternary" />
+          </ChildLhs>
+          <ChildRhs />
+          {error
+            ? (
+              <ChildLhs>
+                <StyledError>{error}</StyledError>
+              </ChildLhs>
+            )
+            : null}
+        </Container>
       </form>
     );
   }
@@ -55,7 +98,7 @@ export class PopulationForm extends React.Component {
 
 PopulationForm.propTypes = {
   onSave: PropTypes.func,
+  onDelete: PropTypes.func,
   countries: PropTypes.array,
-  loadData: PropTypes.func
+  loadData: PropTypes.func,
 };
-

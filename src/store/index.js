@@ -1,5 +1,5 @@
 import { createStore, applyMiddleware } from 'redux';
-import reducer, { getInitialState } from './reducer';
 import thunk from 'redux-thunk';
+import reducer, { getInitialState } from './reducer';
 
 export default () => createStore(reducer, getInitialState(), applyMiddleware(thunk));
