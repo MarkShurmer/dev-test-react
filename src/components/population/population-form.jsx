@@ -99,6 +99,7 @@ export class PopulationForm extends React.Component {
 PopulationForm.propTypes = {
   onSave: PropTypes.func,
   onDelete: PropTypes.func,
-  countries: PropTypes.array,
   loadData: PropTypes.func,
+  error: PropTypes.string,
+  countries: PropTypes.arrayOf(PropTypes.string)
 };

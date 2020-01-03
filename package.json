@@ -2,12 +2,9 @@
   "name": "dev-test-react",
   "version": "1.0.0",
   "main": "src/index.jsx",
-  "author": "Ian Chadwick <ian@mizmoz.com>",
+  "author": "Mark Shurmer",
   "private": true,
   "scripts": {
-    "go": "yarn install && yarn run start",
-    "go-npm": "npm install && npm run start",
-    "build": "webpack --mode production",
     "start": "webpack-dev-server --mode development --open --history-api-fallback",
     "test": "jest --coverage"
   },
@@ -48,6 +45,5 @@
       "node_modules/(?!react|react-dom|core-js|es6.promise)"
     ],
     "collectCoverage": true
-
   }
 }
